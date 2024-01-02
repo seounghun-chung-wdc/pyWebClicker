@@ -1,5 +1,9 @@
 Please run "start.bat" in your server machine.
 
+Repository:
+git clone git@github.com:seounghun-chung-wdc/pyWebClicker.git
+
+
 For changing clicker configuration, please refer in below example
 
 pywebclicker.csv => clicker configuration file.
@@ -9,7 +13,7 @@ If clicker is not connected, please use "-".
 - (HOST) WDKR-PSHOST-01 -> In server app, "ping command" for checking network status use this host name.
 - Other configuration is not used in server side. Plain text is available. 
 
-Example)
+Example:
 	NO,HOST,IP,Id,PW,Capacity,State,Power Off,Power On,Clicker
 	1,WDKR-PSHOST-01,-,.\intg,tjtls@,512GB,,,,-
 	2,WDKR-PSHOST-03,-,.\intg,tjtls@,1TB,,,,COM3/1/q
@@ -21,3 +25,4 @@ Example)
 	8,WDKR-PSHOST-10,-,.\intg,tjrtkdals1@#,1TB,,,,COM5/2/w
 	9,WDKR-PSHOST-11,-,.\intg,tjrtkdals1@#,512GB,,,,-
 	10,WDKR-PSHOST-12,-,.\intg,tjrtkdals1@#,2TB,,,,COM5/4/r
+	
