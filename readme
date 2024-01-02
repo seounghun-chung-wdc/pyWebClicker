@@ -3,6 +3,9 @@ Please run "start.bat" in your server machine.
 Repository:
 git clone git@github.com:seounghun-chung-wdc/pyWebClicker.git
 
+KR PS Lab server link:
+*Caution* : It is debug site. This ip can be changed. If it is not connected, please contact seoung-hun-chung@wdc.com
+http://10.163.33.47:5000/
 
 For changing clicker configuration, please refer in below example
 
