@@ -50,7 +50,7 @@ addEventListener("DOMContentLoaded", function() {
       // We will create a new request object
       // and set up a handler for the response
       var request = new XMLHttpRequest();
-	  request.extraInfo = e.currentTarget
+      request.extraInfo = e.currentTarget
       request.onload = function() {
           // We could do more interesting things with the response
           // or, we could ignore it entirely
@@ -59,7 +59,7 @@ addEventListener("DOMContentLoaded", function() {
       };
       // We point the request at the appropriate command
       e.currentTarget.setAttribute('disabled', true);
-	  alert("Wait 10s... for clicker working");
+      alert("Wait 10s... for clicker working");
       request.open("GET", "/" + command, true);
       // and then we send it off
       request.send();
@@ -75,60 +75,46 @@ addEventListener("DOMContentLoaded", function() {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>pyWebClicker</title>
   <style>
+  p {
+    text-align:left;
+  }
+  li {
+    text-align:left;
+  }
   table {
-      width: 1000px;
-      text-align: center;
-      border: 1px solid #fff;
-      border-spacing: 1px;
-      font-family: 'Cairo', sans-serif;
-    margin: auto;
+    border-collapse: collapse;
+    margin: 1rem auto;
+    background-color: white;
+    font-family: Helvetica, Arial, sans-serif;
   }
   
-  caption {
-      font-weight: bold;
+  /* 테이블 행 */
+  th, td {
+    padding: 8px;
+    text-align: left;
+    border: 1px solid #ddd;
+    text-align: center;
   }
   
-  table td {
-      padding: 10px;
-      background-color: #eee;
+  th {
+    background-color: #1b1b1b;
+    color: #ddd;
   }
   
-  table th {
-      background-color: #333;
-      color: #fff;
-      padding: 10px;
+  /* 테이블 올렸을 때 */
+  tbody tr:hover {
+    background-color: #d3d3d3;
+    opacity: 0.9;
   }
   
-  img {
-      width: 90px;
-      height: 90px;
+  tr:nth-child(even) {
+    background-color: #fff6f6;
   }
-  
-  .view,
-  .delete {
-      border: none;
-      padding: 5px 10px;
-      color: #fff;
-      font-weight: bold;
-  }
-  
-  .view {
-      background-color: #03A9F4;
-  }
-  
-  .delete {
-      background-color: #E91E63;
-  }
-  
-  .tablefoot {
-      padding: 0;
-      border-bottom: 3px solid #009688;
-  }
-  </style>
+  </style>  
 </head>
 <body>
    <table>
-   <caption> pyWebClicker </caption>
+   <caption style="font-family: Helvetica, Arial, sans-serif; font-size: 50px; font-weight: bold;"> pyWebClicker </caption>
    <thead>
      <tr>
       <th>NO</th>
@@ -148,7 +134,7 @@ addEventListener("DOMContentLoaded", function() {
    <tbody>
    {% for host_info in list_host_info %}
      <tr>
-      <td>{{ host_info["NO"] }}</td>
+      <td style="width: 30px">{{ host_info["NO"] }}</td>
       <td>{{ host_info["HOST"] }}</td>
       <td>{{ host_info["IP"] }}</td>
       <td>{{ host_info["Id"] }}</td>
@@ -169,6 +155,29 @@ addEventListener("DOMContentLoaded", function() {
       <td>{{ host_info["Clicker"] }}</td>
      </tr>
    {% endfor %}
+     <tr>
+         <td colspan="10">
+         <p ><strong>*Notice*</strong></p>
+         <ul>
+             <li>If you click &#39;on&#39; or &#39;off&#39;, please wait 10s. PC reboot need time.&nbsp;</li>
+             <li><strong>State</strong>
+             <ul>
+                 <li>Active : PC is on</li>
+                 <li>Error : PC is off or hang-up</li>
+             </ul>
+             </li>
+             <li><strong>Server PC</strong>
+             <ul>
+                 <li>host:&nbsp;WDKR-PS-05.sdcorp.global.sandisk.com</li>
+                 <li>ID : CSSVal</li>
+                 <li>PW : CSS</li>
+             </ul>
+             </li>
+             <li><strong>Repo</strong>:&nbsp;https://github.com/seounghun-chung-wdc/pyWebClicker</li>
+             <li><strong>Contact</strong>: seoung.hun.chung@wdc.com</li>
+         </ul>
+         </td>
+     </tr>   
    </tbody>
   </table>
 </body>
