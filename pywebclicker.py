@@ -2,6 +2,7 @@ from flask import Flask, render_template, request, redirect, send_file, jsonify,
 from pyclicker import load_csv, ping_check, check_clicker_command, send_serial
 import time
 import random
+import socket
 app = Flask("JobScrapper")
 app.secret_key = "Chung"
 db = {} # 데이터베이스
@@ -42,6 +43,6 @@ def command(cmd=None):
 def home():
     global list_host_info
     list_host_info=load_csv()
-    return render_template("home.html",list_host_info=list_host_info)
+    return render_template("home.html",list_host_info=list_host_info,pcname=socket.gethostname())
 
 app.run("0.0.0.0")
