@@ -25,8 +25,37 @@
         });
     }
     // 일정 간격으로 데이터 업데이트
-    setInterval(getData, 1000);
+    setInterval(getData, 3000);
 </script> 
+
+<script type="text/javascript">
+    // 데이터를 가져오고 화면에 표시하는 함수
+    function getUserStatus() {
+        $.ajax({
+            url: '/user',
+            type: 'GET',
+            dataType: 'json',
+            success: function(data) {   
+{% for host_info in list_host_info %}
+                $('#{{ host_info["NO"] }}-user').text(data.{{ host_info["HOST"]|replace('-','') }});
+                if (data.{{ host_info["HOST"]|replace('-','') }} != 'No connect'){
+                  $('#{{ host_info["NO"] }}-user').css('color','red');
+                }
+                else{                
+                  $('#{{ host_info["NO"] }}-user').css('color','black');
+                }
+{% endfor %}
+            },
+            error: function(xhr, status, error) {
+                console.log('Error:', error);
+            }
+        });
+		alert("Wait a second...check user status")
+    }
+    // 일정 간격으로 데이터 업데이트
+    // setInterval(getUserStatus, 5000);
+</script> 
+
 <script>
 // Only run what comes next *after* the page has loaded
 addEventListener("DOMContentLoaded", function() {
@@ -67,12 +96,14 @@ addEventListener("DOMContentLoaded", function() {
   }
 }, true);
 </script>
-
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
   <title>pyWebClicker</title>
   <style>
   p {
@@ -124,6 +155,11 @@ addEventListener("DOMContentLoaded", function() {
       <th>PW</th>
       <th>Capacity</th>
       <th>State</th>
+      <th>
+        <button type="button" class="btn btn-default btn-sm" onclick = "getUserStatus()">
+          <span class="glyphicon glyphicon-refresh"></span> User
+        </button>
+	  </th>
       <th>Power<br>
         Off</th>
       <th>Power<br>
@@ -142,6 +178,10 @@ addEventListener("DOMContentLoaded", function() {
       <td>{{ host_info["Capacity"] }}</td>
       <td>
         <span id="{{ host_info["NO"] }}-state"></span>        
+      </td>      
+      <td>
+        <span id="{{ host_info["NO"] }}-user"></span>
+      </td>
       <td>
       <button class="command command-{{ host_info["HOST"] }}" value="{{ host_info["HOST"] }}__off">
           Off
@@ -156,7 +196,7 @@ addEventListener("DOMContentLoaded", function() {
      </tr>
    {% endfor %}
      <tr>
-         <td colspan="10">
+         <td colspan="11">
          <p ><strong>*Notice*</strong></p>
          <ul>
              <li>If you click &#39;on&#39; or &#39;off&#39;, please wait 10s. PC reboot need time.&nbsp;</li>
@@ -173,6 +213,12 @@ addEventListener("DOMContentLoaded", function() {
                  <li>PW : CSS</li>
              </ul>
              </li>
+             <li><strong>User</strong>
+             <ul>
+                 <li>If you click, connected IP is updated.</li>
+                 <li>"No connect" means nobody use this VM</li>
+             </ul>
+             </li>			 
              <li><strong>Repo</strong>:&nbsp;https://github.com/seounghun-chung-wdc/pyWebClicker</li>
              <li><strong>Contact</strong>: seoung.hun.chung@wdc.com</li>
          </ul>

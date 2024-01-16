@@ -4,6 +4,7 @@ import serial.tools.list_ports
 import time
 import os
 import subprocess
+import asyncio
 
 def load_csv(filename='pywebclicker.csv'):
     f = open(filename,'r')
@@ -84,6 +85,49 @@ def ping_check(host='WDKR-PSHOST-01'):
     else:
         Netstatus = "Error"
     return Netstatus
+    
+async def __get_current_rdp_status(host, user, pw):
+    cmd = r'PSTools\psexec64.exe \\{} -u {} -p {} netstat -aon | findstr ESTAB  | findstr 3389'.format(host,user,pw)
+    print('subprocess: ', cmd)
+    proc = await asyncio.create_subprocess_shell(
+       cmd,
+       stdout=asyncio.subprocess.PIPE,
+       stderr=asyncio.subprocess.PIPE)
+
+    # do something else while ls is working
+
+    # if proc takes very long to complete, the CPUs are free to use   cycles for 
+    # other processes
+    stdout, stderr = await proc.communicate()
+    res = stdout.decode('utf-8')
+    print('stdout: ',host, stdout)
+    if(res == ''):
+        return 'No connect' # No connection
+    else:
+        res = res.split()
+        return res[2] # return connected ip address
+
+
+async def get_current_rdp_status_all(rdp_info_s=None):
+    if rdp_info_s is None:
+        rdp_info_s = [['WDKR-PSHOST-01',r'intg','tjtls@']
+             ,['WDKR-PSHOST-03',r'intg','tjtls@']
+             ,['WDKR-PSHOST-04',r'intg','tjtls@']
+             ,['WDKR-PSHOST-05',r'intg','tjtls@']
+             ,['WDKR-PSHOST-06',r'intg','tjtls@']
+             ,['WDKR-PSHOST-08',r'intg','tjrtkdals1@#']
+             ,['WDKR-PSHOST-09',r'intg','tjrtkdals1@#']
+             ,['WDKR-PSHOST-10',r'intg','tjrtkdals1@#']
+             ,['WDKR-PSHOST-11',r'intg','tjrtkdals1@#']
+             ,['WDKR-PSHOST-12',r'intg','tjrtkdals1@#']]
+    async_func_list = []
+    for info in rdp_info_s:
+        async_func_list.append(__get_current_rdp_status(*info))
+    
+    return await asyncio.gather(*async_func_list)
+
+def get_current_rdp_status(rdp_info_s=None):
+    return asyncio.run(get_current_rdp_status_all(rdp_info_s))
     
 def check_clicker_command(command):
     clicker = command

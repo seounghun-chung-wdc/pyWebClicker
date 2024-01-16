@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, send_file, jsonify, flash
-from pyclicker import load_csv, ping_check, check_clicker_command, send_serial
+from pyclicker import load_csv, ping_check, check_clicker_command, send_serial, get_current_rdp_status
 import time
 import random
 import socket
@@ -17,6 +17,24 @@ def get_data():
         #data[host_info['HOST'].replace('-','')] = '%03d'%(int(random.random()*1000))
         data[host_info['HOST'].replace('-','')] = ping_check(host_info['HOST'])
     return jsonify(data)
+
+@app.route('/user')
+def get_user():
+    data = dict()
+    gen_host_info = list()
+    for host_info in list_host_info:
+        # 'WDKR-PSHOST-01' : xxxx
+        # 'WDKR-PSHOST-02' : xxxx
+        #data[host_info['HOST'].replace('-','')] = '%03d'%(int(random.random()*1000))
+        #data[host_info['HOST'].replace('-','')] = ping_check(host_info['HOST'])
+        gen_host_info.append([host_info['HOST'],host_info['Id'].replace('.\\',''),host_info['PW']])
+
+    res = get_current_rdp_status(gen_host_info)
+    print('res:: ',res)    
+    for idx, host_info in enumerate(list_host_info):
+        data[host_info['HOST'].replace('-','')]=res[idx]
+    return jsonify(data)
+
 
 @app.route('/<cmd>')
 def command(cmd=None):
