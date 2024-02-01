@@ -11,11 +11,18 @@ list_host_info=load_csv()
 @app.route('/data')
 def get_data():
     data = dict()
+    gen_host_info = list()
     for host_info in list_host_info:
         # 'WDKR-PSHOST-01' : xxxx
         # 'WDKR-PSHOST-02' : xxxx
         #data[host_info['HOST'].replace('-','')] = '%03d'%(int(random.random()*1000))
-        data[host_info['HOST'].replace('-','')] = ping_check(host_info['HOST'])
+        #data[host_info['HOST'].replace('-','')] = ping_check(host_info['HOST'])
+        gen_host_info.append(host_info['HOST'])
+
+    res = ping_check(gen_host_info) 
+
+    for idx, host_info in enumerate(list_host_info):
+        data[host_info['HOST'].replace('-','')]=res[idx]    
     return jsonify(data)
 
 @app.route('/user')

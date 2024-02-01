@@ -77,14 +77,57 @@ def power_off(ser, command='3'):
     time.sleep(0.1)
     time.sleep(3) # wait remain time    
 
-def ping_check(host='WDKR-PSHOST-01'):
+async def __get_remot_pc_ping(host):
     hostname = host+'.sdcorp.global.sandisk.com'
-    response = os.system("ping -n 1 " + hostname + ' | findstr /i "TTL" > NUL')
-    if response == 0:
+    cmd = "ping -n 1 " + hostname + ' | findstr /i "TTL" > NUL'
+
+    proc = await asyncio.create_subprocess_shell(
+       cmd,
+       stdout=asyncio.subprocess.PIPE,
+       stderr=asyncio.subprocess.PIPE)
+
+    # do something else while ls is working
+
+    # if proc takes very long to complete, the CPUs are free to use   cycles for 
+    # other processes
+    stdout, stderr = await proc.communicate()
+    return_code = await proc.wait()
+    res = stdout.decode('utf-8')
+    #print('stdout {}: '.format(cmd), stdout)
+    #print('return_code: ',return_code)
+    if return_code == 0:
         Netstatus = "Active"
     else:
         Netstatus = "Error"
     return Netstatus
+
+async def __get_remot_pc_ping_all(host_info=None):
+    if host_info is None:
+        host_info = ['WDKR-PSHOST-01'
+                     ,'WDKR-PSHOST-03'
+                     ,'WDKR-PSHOST-04'
+                     ,'WDKR-PSHOST-05'
+                     ,'WDKR-PSHOST-06'
+                     ,'WDKR-PSHOST-08'
+                     ,'WDKR-PSHOST-09'
+                     ,'WDKR-PSHOST-10'
+                     ,'WDKR-PSHOST-11'
+                     ,'WDKR-PSHOST-12']
+    async_func_list = []
+    for info in host_info:
+        async_func_list.append(__get_remot_pc_ping(info))
+    
+    return await asyncio.gather(*async_func_list)
+
+def ping_check(host):
+    #hostname = host+'.sdcorp.global.sandisk.com'
+    #response = os.system("ping -n 1 " + hostname + ' | findstr /i "TTL" > NUL')
+    #if response == 0:
+    #    Netstatus = "Active"
+    #else:
+    #    Netstatus = "Error"
+    #return Netstatus
+    return asyncio.run(__get_remot_pc_ping_all(host))
     
 async def __get_current_rdp_status(host, user, pw):
     cmd = r'PSTools\psexec64.exe \\{} -u {} -p {} netstat -aon | findstr ESTAB  | findstr 3389'.format(host,user,pw)
