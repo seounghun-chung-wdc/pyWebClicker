@@ -79,7 +79,7 @@ def power_off(ser, command='3'):
 
 async def __get_remot_pc_ping(host):
     hostname = host+'.sdcorp.global.sandisk.com'
-    cmd = "ping -n 1 " + hostname + ' | findstr /i "TTL" > NUL'
+    cmd = "ping -n 1 -w 1000 " + hostname + ' | findstr /i "TTL" > NUL'
 
     proc = await asyncio.create_subprocess_shell(
        cmd,
